@@ -1,0 +1,31 @@
+{
+  "name": "HelpNet - Global Disaster Response",
+  "short_name": "HelpNet",
+  "description": "Real-time disaster response and volunteer coordination",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ff4757",
+  "theme_color": "#ff4757",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/256/3050/3050525.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/128/3050/3050525.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["social", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}
