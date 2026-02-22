@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidRequest() {
+      return request.resource.data.keys().hasAll(['type', 'description', 'urgency', 'location']) &&
+             request.resource.data.type is string &&
+             request.resource.data.description is string &&
+             request.resource.data.urgency in ['low', 'medium', 'high'];
+    }
+    
+    // Requests collection
+    match /requests/{requestId} {
+      // Anyone can read (for map display)
+      allow read: if true;
+      
+      // Authenticated users can create valid requests
+      allow create: if isAuthenticated() && isValidRequest();
+      
+      // Only owner can update/delete their own requests
+      allow update, delete: if isOwner(resource.data.requesterId);
+    }
+    
+    // Users collection (for profiles/skills)
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+    }
+    
+    // Teams collection (for team management)
+    match /teams/{teamId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || 
+         request.auth.uid in resource.data.admins);
+    }
+    
+    // Messages collection (for chat)
+    match /messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+        request.resource.data.senderId == request.auth.uid;
+    }
+  }
+}
+
