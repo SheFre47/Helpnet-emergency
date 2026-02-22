@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ff4757">
+  <title>HelpNet - Global Disaster Response</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <!-- Mapbox CSS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  
+  <!-- Tailwind CSS (via CDN for speed) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100vh; }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    .urgency-high { border-left: 4px solid #ff4757; }
+    .urgency-medium { border-left: 4px solid #ffa502; }
+    .urgency-low { border-left: 4px solid #2ed573; }
+    @keyframes pulse-red {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+      50% { box-shadow: 0 0 0 20px rgba(255, 71, 87, 0); }
+    }
+    .pulse-marker { animation: pulse-red 2s infinite; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Mapbox -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  
+  <!-- Firebase (Your Config) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, orderBy, GeoPoint, updateDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPcsJQQlqQuwxZXP5mJ9rHNLiOifcafA8",
+      authDomain: "helpnet-global.firebaseapp.com",
+      projectId: "helpnet-global",
+      storageBucket: "helpnet-global.firebasestorage.app",
+      messagingSenderId: "995906916404",
+      appId: "1:995906916404:web:73e863de0de445d4337a61"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+    
+    // Make available globally for React
+    window.firebaseApp = app;
+    window.firebaseAuth = auth;
+    window.firebaseDb = db;
+    window.firebaseProvider = provider;
+    window.firestoreFns = { collection, addDoc, query, where, onSnapshot, orderBy, GeoPoint, updateDoc, doc, getDoc, serverTimestamp };
+    window.authFns = { signInWithPopup, onAuthStateChanged, signOut };
+    
+    console.log("🔥 Firebase initialized");
+  </script>
+  
+  <!-- Main React App -->
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
+
